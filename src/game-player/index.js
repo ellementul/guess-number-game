@@ -10,21 +10,30 @@ const answerEvent = require('../events/player_answer_event')
 const winEvent = require('../events/player_won_event')
 const loseEvent = require('../events/player_lost_event')
 
-const WAIT = "WaitingOfPlayers"
-const PLAY = "Playing" 
+const WAIT = "WaitingOtherPlayers"
+const READY = "Ready" 
 
 class Player extends Member {
   constructor() {
     super()
+
+    this.state = WAIT
     
     this.onEvent(waitEvent, () => this.waitingPlayers())
+    this.onEvent(startEvent, () => this.print('***Start Game***'))
     this.onEvent(askEvent, () => this.asking())
+    this.onEvent(loseEvent, payload => this.lose(payload))
+    this.onEvent(winEvent, payload => this.win(payload))
   }
 
   waitingPlayers() {
-    this.send(readyEvent, {
-      uuid: this.uuid
-    })
+    if(this.state == WAIT) {
+      this.print('Wait for other players...')
+      this.state = READY
+      this.send(readyEvent, {
+        uuid: this.uuid
+      })
+    }
   }
 
   asking() {
@@ -37,12 +46,26 @@ class Player extends Member {
     if(isNaN(number))
       number = Types.Index.Def(100).rand()
 
-    console.log('Your number is ', number)
+    this.print('Your number is ', number)
 
     this.send(answerEvent, {
       uuid: this.uuid,
       state: number
     })
+  }
+
+  lose({ uuid }) {
+    if(this.uuid == uuid)
+      this.print("))You're loser((")
+  }
+
+  win({ uuid }) {
+    if(this.uuid == uuid)
+      this.print("!!You're winner!!")
+  }
+
+  print() {
+    console.log(...arguments)
   }
 }
 
