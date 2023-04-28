@@ -16,7 +16,7 @@ class GameMaster extends Member {
   constructor() {
     super()
     this.players = new Set
-    this.min_players_limit = 2
+    this.players_limit = 2
 
     this.onEvent(timeEvent, () => this.waitingTime())
     this.onEvent(readyEvent, (payload) => this.readyPlayer(payload))
@@ -40,7 +40,7 @@ class GameMaster extends Member {
 
     this.players.add(uuid)
 
-    if (this.players.size >= this.min_players_limit) {
+    if (this.players.size == this.players_limit) {
       this.state = PLAY
       this.send(startEvent)
       this.askPlayer()
@@ -56,6 +56,7 @@ class GameMaster extends Member {
 
   answerPlayer({ uuid, state }) {
     if (this.state != PLAY) return;
+    if (!this.players.has(uuid)) return;
 
     this.answers.set(uuid, state)
 
