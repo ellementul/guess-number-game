@@ -69,4 +69,40 @@ class Player extends Member {
   }
 }
 
-module.exports = { Player }
+class Bot extends Player {
+
+  waitingPlayers() {
+    if(this.state == WAIT) {
+      this.state = READY
+      this.send(readyEvent, {
+        uuid: this.uuid
+      })
+    }
+  }
+
+  asking() {
+    this.answering()
+  }
+
+  answering() {
+    const number = Types.Index.Def(100).rand()
+    
+    this.send(answerEvent, {
+      uuid: this.uuid,
+      state: number
+    })
+  }
+
+  lose({ uuid }) {}
+
+  win({ uuid }) {
+    if(this.uuid == uuid)
+      this.print("BOT: !!I won!!")
+  }
+
+  print() {
+    console.log(...arguments)
+  }
+}
+
+module.exports = { Player, Bot }
