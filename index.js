@@ -1,44 +1,78 @@
-const { UnitedEventsEnvironment: UEE } = require('@ellementul/united-events-environment')
-const { WsTransport } = require('@ellementul/uee-ws-browser-transport')
+// const { UnitedEventsEnvironment: UEE } = require('@ellementul/united-events-environment')
+// const { WsTransport } = require('@ellementul/uee-ws-browser-transport')
 
-const { Ticker } = require('@ellementul/uee-timeticker')
-const { GameMaster } = require('./src/game-master')
-const { Player, Bot } = require('./src/game-player')
+// const { Ticker } = require('@ellementul/uee-timeticker')
+// const { GameMaster } = require('./src/game-master')
+// const { Player, Bot } = require('./src/game-player')
 
-const membersList = {
-  roles: [
-    {
-      role: "Ticker",
-      memberConstructor: Ticker
-    },
-    {
-      role: "GameMaster",
-      memberConstructor: GameMaster
-    },
-    {
-      role: "Player",
-      memberConstructor: Player,
-      local: true
-    },
-    // {
-    //   role: "Bot",
-    //   memberConstructor: Bot,
-    // }
-  ]
-}
+// const membersList = {
+//   roles: [
+//     {
+//       role: "Ticker",
+//       memberConstructor: Ticker
+//     },
+//     {
+//       role: "GameMaster",
+//       memberConstructor: GameMaster
+//     },
+//     {
+//       role: "Player",
+//       memberConstructor: Player,
+//       local: true
+//     },
+//     // {
+//     //   role: "Bot",
+//     //   memberConstructor: Bot,
+//     // }
+//   ]
+// }
 
-env = new UEE({
-  Transport: WsTransport,
-  membersList,
-  isShowErrors: true
-})
+// env = new UEE({
+//   Transport: WsTransport,
+//   membersList,
+//   isShowErrors: true
+// })
 
-const url = new URL(window.location.href)
-const hostAddress = url.searchParams.get('host_address')
-env.run({
-  isHost: !hostAddress,
-  signalServerAddress: "ws://localhost:8080",
-})
+// const url = new URL(window.location.href)
+// const hostAddress = url.searchParams.get('host_address')
+// env.run({
+//   isHost: !hostAddress,
+//   signalServerAddress: "ws://localhost:8080",
+// })
 
-url.searchParams.set('host_address', true)
-alert(url)
+// url.searchParams.set('host_address', true)
+// alert(url)
+
+import { Application, Sprite, Assets } from 'pixi.js';
+
+// The application will create a renderer using WebGL, if possible,
+// with a fallback to a canvas render. It will also setup the ticker
+// and the root stage PIXI.Container
+const app = new Application();
+
+// The application will create a canvas element for you that you
+// can then insert into the DOM
+document.body.appendChild(app.view);
+
+// load the texture we need
+const texture = await Assets.load('bunny.png');
+
+// This creates a texture from a 'bunny.png' image
+const bunny = new Sprite(texture);
+
+// Setup the position of the bunny
+bunny.x = app.renderer.width / 2;
+bunny.y = app.renderer.height / 2;
+
+// Rotate around the center
+bunny.anchor.x = 0.5;
+bunny.anchor.y = 0.5;
+
+// Add the bunny to the scene we are building
+app.stage.addChild(bunny);
+
+// Listen for frame updates
+app.ticker.add(() => {
+    // each frame we spin the bunny around a bit
+    bunny.rotation += 0.01;
+});
