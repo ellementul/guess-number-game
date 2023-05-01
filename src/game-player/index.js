@@ -1,5 +1,4 @@
 const { Member, Types } = require('@ellementul/uee-core')
-const cq = require('console-questions')
 
 const timeEvent = require('../events/time_event')
 const waitEvent = require('../events/wait_event')
@@ -37,14 +36,16 @@ class Player extends Member {
   }
 
   asking() {
-    cq.ask("Your number?", { callback: answer => this.answering(answer) })
+    const answer = prompt("Your number?", Types.Index.Def(100).rand())
+    this.answering(answer)
   }
 
   answering(answer) {
     let number = parseInt(answer)
-    
-    if(isNaN(number))
-      number = Types.Index.Def(100).rand()
+    const typeNumber = Types.Index.Def(100)
+
+    if(typeNumber.test(number))
+      number = typeNumber.rand()
 
     this.print('Your number is ', number)
 
