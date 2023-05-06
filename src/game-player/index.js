@@ -9,6 +9,8 @@ const answerEvent = require('../events/player_answer_event')
 const winEvent = require('../events/player_won_event')
 const loseEvent = require('../events/player_lost_event')
 
+import RenderFactory from '../pixi-render'
+
 const WAIT = "WaitingOtherPlayers"
 const READY = "Ready" 
 
@@ -27,6 +29,8 @@ class Player extends Member {
 
   waitingPlayers() {
     if(this.state == WAIT) {
+      RenderFactory()
+
       this.print('Wait for other players...')
       this.state = READY
       this.send(readyEvent, {
