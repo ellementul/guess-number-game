@@ -1,5 +1,5 @@
-import { Application, Container, Color } from 'pixi.js';
-import { Form } from './from.js'
+import { Application, Container, Graphics } from 'pixi.js';
+import Circle from './circle'
 
 // The application will create a renderer using WebGL, if possible,
 // with a fallback to a canvas render. It will also setup the ticker
@@ -9,37 +9,19 @@ export default async function RenderFactory() {
   const app = new Application({ width: window.innerWidth, height: window.innerHeight });  
   document.body.appendChild(app.view);
 
-  const view = new Container();
+  app.stage.interactive = true;
+  app.stage.hitArea = app.screen;
 
+  const view = new Container();
   app.stage.addChild(view);
 
-  const form = Form({
-    border: 5,
-    textColor: new Color('#000000'),
-    fontSize: 24,
-    backgroundColor: new Color('#F1D583'),
-    borderColor: new Color('#DCB000'),
-    width: 320,
-    height: 70,
-    radius: 11,
-    maxLength: 3,
-    align: 'center',
-    placeholder: 'Enter Your Number',
-    paddingTop: 0,
-    paddingRight: 0,
-    paddingBottom: 0,
-    paddingLeft: 0,
-    onChange: console.log
+  const circle = new Circle()
+
+  app.stage.on('pointerdown', () => {
+    circle.move(50)
   })
 
-  // Move container to the center
-  view.x = app.screen.width / 2;
-  view.y = app.screen.height / 2;
+  view.addChild(circle);
 
-  // Center bunny sprite in local container coordinates
-  view.pivot.x = view.width / 2;
-  view.pivot.y = view.height / 2;
-
-  view.addChild(form)
   return app
 }
