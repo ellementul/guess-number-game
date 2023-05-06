@@ -1,11 +1,11 @@
-import { Application, Container, Graphics } from 'pixi.js';
+import { Application, Container } from 'pixi.js';
 import Circle from './circle'
 
 // The application will create a renderer using WebGL, if possible,
 // with a fallback to a canvas render. It will also setup the ticker
 // and the root stage PIXI.Container
 
-export default async function RenderFactory() {
+export default async function WorldFactory() {
   const app = new Application({ width: window.innerWidth, height: window.innerHeight });  
   document.body.appendChild(app.view);
 
@@ -17,11 +17,11 @@ export default async function RenderFactory() {
 
   const circle = new Circle()
 
-  app.stage.on('pointerdown', () => {
-    circle.move(50)
-  })
-
   view.addChild(circle);
 
-  return app
+  return {
+    update: moving => {
+      circle.move(moving.x, moving.y)
+    }
+  }
 }

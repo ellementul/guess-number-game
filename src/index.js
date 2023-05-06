@@ -3,7 +3,7 @@ const { WsTransport } = require('@ellementul/uee-ws-browser-transport')
 
 const { Ticker } = require('@ellementul/uee-timeticker')
 const { GameMaster } = require('./game-master')
-const { Player, Bot } = require('./game-player')
+const { Player } = require('./game-player')
 
 const membersList = {
   roles: [
@@ -19,11 +19,7 @@ const membersList = {
       role: "Player",
       memberConstructor: Player,
       local: true
-    },
-    // {
-    //   role: "Bot",
-    //   memberConstructor: Bot,
-    // }
+    }
   ]
 }
 

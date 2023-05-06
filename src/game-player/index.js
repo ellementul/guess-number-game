@@ -1,17 +1,15 @@
-const { Member, Types } = require('@ellementul/uee-core')
+const { Member } = require('@ellementul/uee-core')
 
 const timeEvent = require('../events/time_event')
 const waitEvent = require('../events/wait_event')
 const readyEvent = require('../events/player_ready_event')
 const startEvent = require('../events/game_start_event')
-const askEvent = require('../events/game_ask_event')
-const answerEvent = require('../events/player_answer_event')
-const winEvent = require('../events/player_won_event')
-const loseEvent = require('../events/player_lost_event')
+const updateWorldEvent = require('../events/update_world_event')
 
-import RenderFactory from '../pixi-render'
+import WorldFactory from '../pixi-render'
 
 const WAIT = "WaitingOtherPlayers"
+const LOAD = "Ready" 
 const READY = "Ready" 
 
 class Player extends Member {
@@ -22,51 +20,31 @@ class Player extends Member {
     
     this.onEvent(waitEvent, () => this.waitingPlayers())
     this.onEvent(startEvent, () => this.print('***Start Game***'))
-    this.onEvent(askEvent, () => this.asking())
-    this.onEvent(loseEvent, payload => this.lose(payload))
-    this.onEvent(winEvent, payload => this.win(payload))
+    this.onEvent(updateWorldEvent, payload => this.updateWorld(payload))
   }
 
   waitingPlayers() {
     if(this.state == WAIT) {
-      RenderFactory()
+      this.print('Loading world...')
+      this.state = LOAD
+      WorldFactory()
+      .then(world => this.setupWorld(world))
+      .reject(error => this.print('Loading error:', error))
+    }
+  }
 
-      this.print('Wait for other players...')
+  setupWorld(world) {
+    this.world = world
+
+    this.print('Wait for other players...')
       this.state = READY
       this.send(readyEvent, {
         uuid: this.uuid
       })
-    }
   }
 
-  asking() {
-    const answer = prompt("Your number?", Types.Index.Def(100).rand())
-    this.answering(answer)
-  }
-
-  answering(answer) {
-    let number = parseInt(answer)
-    const typeNumber = Types.Index.Def(100)
-
-    if(typeNumber.test(number))
-      number = typeNumber.rand()
-
-    this.print('Your number is ', number)
-
-    this.send(answerEvent, {
-      uuid: this.uuid,
-      state: number
-    })
-  }
-
-  lose({ uuid }) {
-    if(this.uuid == uuid)
-      this.print("))You're loser((")
-  }
-
-  win({ uuid }) {
-    if(this.uuid == uuid)
-      this.print("!!You're winner!!")
+  updateWorld(payload) {
+    this.world.update(payload)
   }
 
   print() {
@@ -74,40 +52,4 @@ class Player extends Member {
   }
 }
 
-class Bot extends Player {
-
-  waitingPlayers() {
-    if(this.state == WAIT) {
-      this.state = READY
-      this.send(readyEvent, {
-        uuid: this.uuid
-      })
-    }
-  }
-
-  asking() {
-    this.answering()
-  }
-
-  answering() {
-    const number = Types.Index.Def(100).rand()
-    
-    this.send(answerEvent, {
-      uuid: this.uuid,
-      state: number
-    })
-  }
-
-  lose({ uuid }) {}
-
-  win({ uuid }) {
-    if(this.uuid == uuid)
-      this.print("BOT: !!I won!!")
-  }
-
-  print() {
-    console.log(...arguments)
-  }
-}
-
-module.exports = { Player, Bot }
+module.exports = { Player }
