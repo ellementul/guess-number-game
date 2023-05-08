@@ -1,12 +1,10 @@
 const { Member } = require('@ellementul/uee-core')
 
-const timeEvent = require('../events/time_event')
 const waitEvent = require('../events/wait_event')
 const readyEvent = require('../events/player_ready_event')
 const startEvent = require('../events/game_start_event')
-const updateWorldEvent = require('../events/update_world_event')
 
-import WorldFactory from '../pixi-render'
+import World from '../pixi-render'
 
 const WAIT = "WaitingOtherPlayers"
 const LOAD = "Ready" 
@@ -20,31 +18,24 @@ class Player extends Member {
     
     this.onEvent(waitEvent, () => this.waitingPlayers())
     this.onEvent(startEvent, () => this.print('***Start Game***'))
-    this.onEvent(updateWorldEvent, payload => this.updateWorld(payload))
   }
 
   waitingPlayers() {
     if(this.state == WAIT) {
       this.print('Loading world...')
       this.state = LOAD
-      WorldFactory()
-      .then(world => this.setupWorld(world))
-      .reject(error => this.print('Loading error:', error))
+      this.setupWorld()
     }
   }
 
-  setupWorld(world) {
-    this.world = world
+  setupWorld() {
+    this.world = new World(this.onEvent.bind(this))
 
     this.print('Wait for other players...')
       this.state = READY
       this.send(readyEvent, {
         uuid: this.uuid
       })
-  }
-
-  updateWorld(payload) {
-    this.world.update(payload)
   }
 
   print() {

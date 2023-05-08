@@ -1,10 +1,10 @@
-const { Member } = require('@ellementul/uee-core')
+const { Member, Types } = require('@ellementul/uee-core')
 
 const timeEvent = require('../events/time_event')
 const waitEvent = require('../events/wait_event')
 const readyEvent = require('../events/player_ready_event')
 const startEvent = require('../events/game_start_event')
-const movingEvent = require('../events/update_world_event')
+const createObjectEvent = require('../events/create_object_event')
 
 const WAIT = "WaitingOfPlayers"
 const PLAY = "Playing" 
@@ -26,7 +26,6 @@ class GameMaster extends Member {
   }
 
   waitingTime () {
-    if (this.state == PLAY) this.moving()
     if (this.state != WAIT) return;
 
     this.send(waitEvent)
@@ -40,12 +39,38 @@ class GameMaster extends Member {
     if (this.players.size == this.players_limit) {
       this.state = PLAY
       this.send(startEvent)
+      this.loadWorld()
     }
   }
 
-  moving () {
-    this.send(movingEvent, {
-      x: 10
+  loadWorld () {
+
+    this.send(createObjectEvent, {
+      state: {
+        uuid: Types.UUID.Def().rand(),
+        x: 5,
+        y: 5,
+        dynamic: false,
+        shape: {
+          type: "Box",
+          w: 5,
+          h: 0.2
+        }
+      }
+    })
+
+    this.send(createObjectEvent, {
+      state: {
+        uuid: Types.UUID.Def().rand(),
+        x: 5,
+        y: 1.5,
+        dynamic: true,
+        shape: {
+          type: "Box",
+          w: 0.5,
+          h: 0.5
+        }
+      }
     })
   }
 }

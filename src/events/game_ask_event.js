@@ -3,5 +3,5 @@ const type = Types.Object.Def({
   system: "GameSession",
   entity: "Question",
   state: "Your number?"
-}, true) 
+}, true)
 module.exports = EventFactory(type)

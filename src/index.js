@@ -4,6 +4,7 @@ const { WsTransport } = require('@ellementul/uee-ws-browser-transport')
 const { Ticker } = require('@ellementul/uee-timeticker')
 const { GameMaster } = require('./game-master')
 const { Player } = require('./game-player')
+import World from './world'
 
 const membersList = {
   roles: [
@@ -16,6 +17,10 @@ const membersList = {
       memberConstructor: GameMaster
     },
     {
+      role: "World",
+      memberConstructor: World
+    },
+    {
       role: "Player",
       memberConstructor: Player,
       local: true
@@ -26,6 +31,7 @@ const membersList = {
 env = new UEE({
   Transport: WsTransport,
   membersList,
+  // logging: console.log,
   isShowErrors: true
 })
 
