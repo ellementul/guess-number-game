@@ -39,8 +39,8 @@ const url = new URL(window.location.href)
 const hostAddress = url.searchParams.get('host_address')
 env.run({
   isHost: !hostAddress,
-  signalServerAddress: "ws://localhost:8080",
+  signalServerAddress: "wss://beige-squids-rest.loca.lt",
 })
 
 url.searchParams.set('host_address', true)
-alert(url)
+history.pushState({ isHost: true }, "Guess Game", url)
