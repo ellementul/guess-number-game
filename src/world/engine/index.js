@@ -159,7 +159,6 @@ class PhysicEngine {
 
   getObjectList(){
     const objects = []
-    console.log('this.dynamicObjects', this.dynamicObjects.size)
     for(let [uid, { position, velocity }] of this.dynamicObjects) {
       objects.push({
         uid,

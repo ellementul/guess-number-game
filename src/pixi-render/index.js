@@ -2,13 +2,13 @@ const createObjectEvent = require('../events/create_object_event')
 const updatedEvent = require('../events/updated_world_event')
 
 import { Application, Container } from 'pixi.js';
-import Box from './box'
+import Bullet from './bullet'
 
 // The application will create a renderer using WebGL, if possible,
 // with a fallback to a canvas render. It will also setup the ticker
 // and the root stage PIXI.Container
 
-const transformUnitToPixels = units => 100 * units
+const transformUnitToPixels = units => 1 * units
 
 export default class World {
   constructor(onEvent) {
@@ -32,29 +32,32 @@ export default class World {
     this.physicObjects.set(uuid, object)
   }
 
-  create({ state: { uuid, x, y, shape } }) {
+  create({ entity, state: { uuid, position, radius } }) {
     let object
 
-    switch (shape.type) {
-      case "Box":
-        object = new Box({
-          w: transformUnitToPixels(shape.w),
-          h: transformUnitToPixels(shape.h)
+    switch (entity) {
+      case "Bullet":
+        object = new Bullet({
+          position: { 
+            x: transformUnitToPixels(position.x), 
+            y: transformUnitToPixels(position.y) 
+          },
+          radius: transformUnitToPixels(radius)
         })
-        break;
+        break
     
       default:
-        throw new TypeError('Unknown shape!');
+        throw new TypeError('Unknown entity!')
     }
     object.pivot.x = object.width / 2
     object.pivot.y = object.height / 2
     
-    object.position.set(transformUnitToPixels(x), transformUnitToPixels(y))
+    object.position.set(transformUnitToPixels(position.x), transformUnitToPixels(position.x))
     this.addPhysicObject(uuid, object)
   }
 
   update({ state: objects }) {
-    objects.forEach(({ uuid, x, y }) => {
+    objects.forEach(({ uuid, position: { x, y } }) => {
       const object = this.physicObjects.get(uuid)
       object.position.set(transformUnitToPixels(x), transformUnitToPixels(y))
     })

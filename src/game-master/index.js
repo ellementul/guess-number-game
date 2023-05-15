@@ -37,9 +37,9 @@ class GameMaster extends Member {
     this.players.add(uuid)
 
     if (this.players.size == this.players_limit) {
+      this.loadWorld()
       this.state = PLAY
       this.send(startEvent)
-      this.loadWorld()
     }
   }
 
@@ -48,28 +48,11 @@ class GameMaster extends Member {
     this.send(createObjectEvent, {
       state: {
         uuid: Types.UUID.Def().rand(),
-        x: 5,
-        y: 5,
-        dynamic: false,
-        shape: {
-          type: "Box",
-          w: 5,
-          h: 0.2
-        }
-      }
-    })
-
-    this.send(createObjectEvent, {
-      state: {
-        uuid: Types.UUID.Def().rand(),
-        x: 5,
-        y: 1.5,
-        dynamic: true,
-        shape: {
-          type: "Box",
-          w: 0.5,
-          h: 0.5
-        }
+        position: {
+          x: 60,
+          y: 60
+        },
+        radius: 30
       }
     })
   }
