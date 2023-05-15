@@ -57,7 +57,7 @@ class PhysicEngine {
       position,
       collide,
       velocity: {
-        x: velocity.x * 0.001,
+        x: velocity.x * 0.001, // second to millisecond
         y: velocity.y * 0.001
       }
     })
@@ -167,8 +167,8 @@ class PhysicEngine {
            y: Math.round(position.y)
         },
         velocity: {
-          x: Math.round(velocity.x * 1000),
-          y: Math.round(velocity.y * 1000)
+          x: Math.round(velocity.x * 1000) / 1000,
+          y: Math.round(velocity.y * 1000) /1000
         }
       })
     }

@@ -37,7 +37,7 @@ export default class World extends Member {
   }
 
   createBullet(uid, position, radius) {
-    const velocity = { x: 512, y: 512 }
+    const velocity = { x: 1024, y: 1024 }
 
     const polygon = [
       { x: position.x, y: position.y + radius },
@@ -82,7 +82,7 @@ export default class World extends Member {
       deltaMstime = 0
 
     const objects = this.physic.getObjectList()
-      .map(({uid, position}) => ({uuid: uid, position}))
+      .map(({uid, position, velocity}) => ({uuid: uid, position, velocity}))
 
     if(objects.length > 0)
       this.send(updateWorldEvent, {

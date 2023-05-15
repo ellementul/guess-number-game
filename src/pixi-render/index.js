@@ -15,13 +15,15 @@ export default class World {
     const app = new Application({ width: window.innerWidth, height: window.innerHeight });  
     document.body.appendChild(app.view);
 
-    app.stage.interactive = true
-    app.stage.hitArea = app.screen
-
     this.view = new Container()
     app.stage.addChild(this.view)
 
     this.physicObjects = new Map()
+    app.ticker.add(delta => {
+      for( let [uuid, object] of this.physicObjects ) {
+        object.step(delta)
+      }
+    })
 
     onEvent(createObjectEvent, payload => this.create(payload))
     onEvent(updatedEvent, payload => this.update(payload))
@@ -56,10 +58,20 @@ export default class World {
     this.addPhysicObject(uuid, object)
   }
 
-  update({ state: objects }) {
-    objects.forEach(({ uuid, position: { x, y } }) => {
+  update({ delta, state: objects }) {
+    objects.forEach(({ uuid, position, velocity }) => {
       const object = this.physicObjects.get(uuid)
-      object.position.set(transformUnitToPixels(x), transformUnitToPixels(y))
+      object.setPosition({
+        delta, 
+        position: { 
+          x: transformUnitToPixels(position.x), 
+          y: transformUnitToPixels(position.y) 
+        },
+        velocity: { 
+          x: transformUnitToPixels(velocity.x), 
+          y: transformUnitToPixels(velocity.y) 
+        }
+      })
     })
   }
 }
