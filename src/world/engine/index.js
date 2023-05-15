@@ -47,13 +47,19 @@ class PhysicEngine {
   addDynamicObject({ uid, polygon, velocity }) {
     if(this.dynamicObjects.has(uid)) return;
 
+    if(polygon.some(point => this.checkOutLimitMap(point)))
+      throw new TypeError("OutMapLimitWhileCreatingObject")
+
     const { position, collide } = this.massCenter(polygon)
 
     this.dynamicObjects.set(uid, {
       polygon,
       position,
       collide,
-      velocity
+      velocity: {
+        x: velocity.x * 0.001,
+        y: velocity.y * 0.001
+      }
     })
   }
 
@@ -64,6 +70,7 @@ class PhysicEngine {
   addSensor({ uid, radius }) {
 
   }
+
   remove(uid) {
     this.dynamicObjects.delete(uid)
   }
@@ -126,7 +133,7 @@ class PhysicEngine {
   }
 
   moveObject(uid, deltaTime) {
-    const object = this.addDinamicObject.get(uid)
+    const object = this.dynamicObjects.get(uid)
 
     if(!!object.velocity.x)
       object.position.x += object.velocity.x * deltaTime
@@ -143,20 +150,27 @@ class PhysicEngine {
   step(deltaTime){
     this.sectionCoordinates.clear()
 
-    for(let [uid, object] in this.dynamicObjects)
+    for(let [uid, object] of this.dynamicObjects)
       this.moveObject(uid, deltaTime)
 
-    for(let [uid, object] in this.dynamicObjects)
-      this.processCollisions(uid)
+    // for(let [uid, object] of this.dynamicObjects)
+    //   this.processCollisions(uid)
   }
 
   getObjectList(){
     const objects = []
-    for(let [uid, { position }] in this.dynamicObjects) {
-      console.log('uid', uid)
+    console.log('this.dynamicObjects', this.dynamicObjects.size)
+    for(let [uid, { position, velocity }] of this.dynamicObjects) {
       objects.push({
         uid,
-        position
+        position: {
+           x: Math.round(position.x),
+           y: Math.round(position.y)
+        },
+        velocity: {
+          x: Math.round(velocity.x * 1000),
+          y: Math.round(velocity.y * 1000)
+        }
       })
     }
 

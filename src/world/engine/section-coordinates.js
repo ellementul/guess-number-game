@@ -10,6 +10,10 @@ class SectionCoordinates {
     this.tiles = []
   }
 
+  clear() {
+    this.tiles = []
+  }
+  
   transformCoordinateX(x) {
     return Math.floor(x / this.sizeSection)
   }
