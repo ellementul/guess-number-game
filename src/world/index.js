@@ -11,24 +11,10 @@ const formatNumber = number => +number.toFixed(2)
 export default class World extends Member {
   constructor() {
     super()
+    
 
-    this.timeStep = Date.now();
-    this.velocityIterations = 6;
-    this.positionIterations = 2;
-    let gravity = planck.Vec2(0.0, 0.0);
-
-    this.world = planck.World({
-      gravity: gravity,
-    });
-
-    this.bodies = new Map()
-
-    // this.world.on('pre-solve', function(contact, contactImpulse) {
-    //   console.log(contact.getFixtureB().getBody().getLinearVelocity(), contactImpulse.localNormal)
-    // });
-
-    this.onEvent(timeEvent, payload => this.step(payload))
-    this.onEvent(createdObjectEvent, payload => this.create(payload))
+    // this.onEvent(timeEvent, payload => this.generateEvents(payload))
+    // this.onEvent(createdObjectEvent, payload => this.create(payload))
   }
 
   create({ 
@@ -40,38 +26,10 @@ export default class World extends Member {
       shape: { type, w, h }
     }
   }) {
-    const body = this.world.createBody({
-      type: dynamic ? "dynamic" : "static",
-      position: planck.Vec2(x, y)
-    });
-
-    let shapeDef
-    switch (type) {
-      case "Box":
-        shapeDef = planck.Box(w/2, h/2);
-        break
     
-      default:
-        throw new TypeError('Unknown shape!')
-    }
-
-    let fixtureDef = {
-      shape: shapeDef,
-      density: 1,
-      friction: 0,
-    }
-
-    if(dynamic)
-      body.setLinearVelocity(planck.Vec2(0, 7))
-
-    body.createFixture(fixtureDef)
-    this.bodies.set(uuid, body)
-
-    if(this.bodies.size > 1024)
-      console.error("Too many objects!!!")
   }
 
-  generateEvents() {
+  generateEvents({ state: { mstime } }) {
     const bodies = []
     for (let [uuid, body] of this.bodies) {
       const { x, y } = body.getPosition()
@@ -85,11 +43,7 @@ export default class World extends Member {
     this.send(updateWorldEvent, { state: bodies })
   }
 
-  step({ state: { mstime } }) {
-    const delta =  mstime - this.timeStep
-    this.timeStep = mstime
-
-    this.world.step(delta/1000, this.velocityIterations, this.positionIterations);
-    this.generateEvents()
+  step() {
+    
   }
 }
