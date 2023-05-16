@@ -29,11 +29,22 @@ export default class World extends Member {
     state: {
       uuid,
       position,
-      radius
+      radius,
+      sizes
     }
   }) {
-    if(entity == "Bullet")
-      this.createBullet(uuid, position, radius)
+
+    switch (entity) {
+      case "Bullet":
+        this.createBullet(uuid, position, radius)
+        break;
+      // case "Box":
+      //   this.createTiledBox(uuid, position, sizes)
+      //   break;
+    
+      default:
+        throw new TypeError('Unknown entity for world!')
+    }      
   }
 
   createBullet(uid, position, radius) {
@@ -53,6 +64,10 @@ export default class World extends Member {
     })
 
     this.bullet.add(uid)
+  }
+
+  createTiledBox(uid, position, sizes) {
+
   }
 
   run() {
