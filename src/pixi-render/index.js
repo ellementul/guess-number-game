@@ -19,11 +19,11 @@ export default class World {
     app.stage.addChild(this.view)
 
     this.physicObjects = new Map()
-    app.ticker.add(delta => {
-      for( let [uuid, object] of this.physicObjects ) {
-        object.step(delta)
-      }
-    })
+    // app.ticker.add(delta => {
+    //   for( let [uuid, object] of this.physicObjects ) {
+    //     object.step(delta)
+    //   }
+    // })
 
     onEvent(createObjectEvent, payload => this.create(payload))
     onEvent(updatedEvent, payload => this.update(payload))
@@ -58,11 +58,10 @@ export default class World {
     this.addPhysicObject(uuid, object)
   }
 
-  update({ delta, state: objects }) {
+  update({ state: objects }) {
     objects.forEach(({ uuid, position, velocity }) => {
       const object = this.physicObjects.get(uuid)
       object.setPosition({
-        delta, 
         position: { 
           x: transformUnitToPixels(position.x), 
           y: transformUnitToPixels(position.y) 

@@ -4,7 +4,6 @@ const waitEvent = require('../events/wait_event')
 const readyEvent = require('../events/player_ready_event')
 const startEvent = require('../events/game_start_event')
 const pingEvent = require('../events/ping_event')
-const pongEvent = require('../events/pong_event')
 const gameTickEvent = require('../events/game_tick_event')
 
 import World from '../pixi-render'
@@ -21,9 +20,12 @@ class Player extends Member {
     
     this.onEvent(waitEvent, () => this.waitingPlayers())
     this.onEvent(startEvent, () => this.startGame())
-    this.onEvent(pongEvent, () => this.pong())
     this.onEvent(gameTickEvent, payload => this.gameTick(payload))
 
+    this.setupFPSWidget()
+  }
+
+  setupFPSWidget() {
     this.maxDelta = 0
     this.averageDelta = 0
 
@@ -32,8 +34,6 @@ class Player extends Member {
 
     this.message = document.createElement("div")
     this.message.innerHTML = "Empty"
-
-    // Добавляем только что созданный элемент в дерево DOM
 
     var theFirstChild = document.body.firstChild;
     document.body.insertBefore(this.message, theFirstChild);
@@ -48,7 +48,7 @@ class Player extends Member {
   }
 
   setupWorld() {
-    //this.world = new World(this.onEvent.bind(this))
+    this.world = new World(this.onEvent.bind(this))
 
     this.print('Wait for other players...')
     this.state = READY
@@ -65,13 +65,11 @@ class Player extends Member {
     })
   }
 
-  pong() {
+  gameTick({ delta }) {
     this.send(pingEvent, {
       uuid: this.uuid
     })
-  }
 
-  gameTick({ delta }) {
     this.averageDelta = (this.averageDelta + delta) * 0.5
 
     if (this.maxDelta == 0)

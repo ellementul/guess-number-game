@@ -1,5 +1,5 @@
 const { Member } = require('@ellementul/uee-core')
-const timeEvent = require('../events/time_event')
+const timeEvent = require('../events/game_tick_event.js')
 const updateWorldEvent = require('../events/updated_world_event')
 const createdObjectEvent = require('../events/create_object_event')
 const startEvent = require('../events/game_start_event')
@@ -37,7 +37,7 @@ export default class World extends Member {
   }
 
   createBullet(uid, position, radius) {
-    const velocity = { x: 1024, y: 1024 }
+    const velocity = { x: 128, y: 128 }
 
     const polygon = [
       { x: position.x, y: position.y + radius },
@@ -62,7 +62,7 @@ export default class World extends Member {
     this.onEvent(timeEvent, payload => this.generateEvents(payload))
 
     this.time = Date.now()
-    this.timer = setInterval(() => this.step(), 10)
+    this.timer = setInterval(() => this.step(), 0)
   }
 
   step() {
@@ -74,22 +74,15 @@ export default class World extends Member {
     this.time = newTime
   }
 
-  generateEvents({ state: { mstime } }) {
-
-    let deltaMstime = mstime - this.mstime
-
-    if(deltaMstime < 0)
-      deltaMstime = 0
+  generateEvents() {
+    this.step()
 
     const objects = this.physic.getObjectList()
       .map(({uid, position, velocity}) => ({uuid: uid, position, velocity}))
 
     if(objects.length > 0)
       this.send(updateWorldEvent, {
-        delta: deltaMstime,
         state: objects
       })
-
-    this.mstime = mstime
   }
 }

@@ -15,7 +15,6 @@ const type = Types.Object.Def({
   system: "World",
   entity: "Bodies",
   action: "Updated",
-  delta: Types.Index.Def(60 * 1000),
   state: Types.Array.Def(bodyType, 1024, true)
 }, true) 
 module.exports = EventFactory(type)
