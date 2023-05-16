@@ -31,7 +31,10 @@ const membersList = {
 env = new UEE({
   Transport: WsTransport,
   membersList,
-  // logging: console.log,
+  // logging: payload => {
+  //   if(payload.message.entity === "Player")
+  //     console.log(payload.message)
+  // },
   isShowErrors: true
 })
 
@@ -39,8 +42,9 @@ const url = new URL(window.location.href)
 const hostAddress = url.searchParams.get('host_address')
 env.run({
   isHost: !hostAddress,
-  signalServerAddress: "wss://beige-squids-rest.loca.lt",
+  signalServerAddress: "ws://185.240.103.217:8080",
 })
 
 url.searchParams.set('host_address', true)
-history.pushState({ isHost: true }, "Guess Game", url)
+// history.pushState({ isHost: true }, "Guess Game", url)
+console.log(url.href)
