@@ -3,7 +3,7 @@ const createBoxEvent = require('../events/create_box_event')
 const updatedEvent = require('../events/updated_world_event')
 
 import { Application, Container } from 'pixi.js';
-import Bullet from './bullet'
+import Bullets from './bullets'
 import Box from './box';
 import Grid from './grid';
 
@@ -23,12 +23,9 @@ export default class World {
 
     this.view.addChild(new Grid)
 
-    this.physicObjects = new Map()
-    // app.ticker.add(delta => {
-    //   for( let [uuid, object] of this.physicObjects ) {
-    //     object.step(delta)
-    //   }
-    // })
+    this.bullets = new Bullets(this.view)
+
+    // app.ticker.add(delta => {})
 
     onEvent(createBulletEvent, payload => this.createBullet(payload))
     onEvent(createBoxEvent, payload => this.createBox(payload))
@@ -36,16 +33,14 @@ export default class World {
   }
 
   createBullet({ uuid, position, radius }) {
-    const object = new Bullet({
+    this.bullets.create({
+      uuid,
       position: { 
         x: transformUnitToPixels(position.x), 
         y: transformUnitToPixels(position.y) 
       },
       radius: transformUnitToPixels(radius)
     })
-
-    this.view.addChild(object)
-    this.physicObjects.set(uuid, object)
   }
 
   createBox({ uuid, position }) {
@@ -54,9 +49,9 @@ export default class World {
   }
 
   update({ state: objects }) {
-    objects.forEach(({ uuid, position, velocity }) => {
-      const object = this.physicObjects.get(uuid)
-      object.setPosition({
+    const updatedBullets = objects.map(({ uuid, position, velocity }) => {
+      return ({
+        uuid,
         position: { 
           x: transformUnitToPixels(position.x), 
           y: transformUnitToPixels(position.y) 
@@ -67,5 +62,6 @@ export default class World {
         }
       })
     })
+    this.bullets.update(updatedBullets)
   }
 }

@@ -79,8 +79,8 @@ class GameMaster extends Member {
     this.send(createBulletEvent, {
       uuid: Types.UUID.Def().rand(),
       position: {
-        x: 32,
-        y: 32
+        x: 96,
+        y: 96
       },
       radius: 8
     })
