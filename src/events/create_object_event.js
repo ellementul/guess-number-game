@@ -7,13 +7,10 @@ const type = Types.Object.Def({
     Types.Const.Def("Box")
   ]),
   action: "Created",
-  state: {
-    uuid: Types.UUID.Def(),
-    position: {
-      x: positionType,
-      y: positionType
-    },
-    radius: positionType
+  uuid: Types.UUID.Def(),
+  position: {
+    x: positionType,
+    y: positionType
   }
 }, true) 
 module.exports = EventFactory(type)

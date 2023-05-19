@@ -76,26 +76,64 @@ class GameMaster extends Member {
   loadWorld () {
 
     this.send(createObjectEvent, {
-      state: {
-        entity: "Bullet",
-        uuid: Types.UUID.Def().rand(),
-        position: {
-          x: 60,
-          y: 60
-        },
-        radius: 30
-      }
+      entity: "Bullet",
+      uuid: Types.UUID.Def().rand(),
+      position: {
+        x: 32,
+        y: 32
+      },
+      radius: 32
     })
 
     // this.send(createObjectEvent, {
     //   entity: "Box",
-    //   state: {
-    //     uuid: Types.UUID.Def().rand(),
-    //     position: {
-    //       x: 60,
-    //       y: 60
-    //     },
-    //     radius: 30
+    //   uuid: Types.UUID.Def().rand(),
+    //   position: {
+    //     x: 0,
+    //     y: 0
+    //   },
+    //   sizes: {
+    //     width: 8,
+    //     height: 1
+    //   }
+    // })
+
+    // this.send(createObjectEvent, {
+    //   entity: "Box",
+    //   uuid: Types.UUID.Def().rand(),
+    //   position: {
+    //     x: 0,
+    //     y: 64
+    //   },
+    //   sizes: {
+    //     width: 1,
+    //     height: 6
+    //   }
+    // })
+
+    // this.send(createObjectEvent, {
+    //   entity: "Box",
+    //   uuid: Types.UUID.Def().rand(),
+    //   position: {
+    //     x: 7*128,
+    //     y: 128
+    //   },
+    //   sizes: {
+    //     width: 1,
+    //     height: 6
+    //   }
+    // })
+
+    // this.send(createObjectEvent, {
+    //   entity: "Box",
+    //   uuid: Types.UUID.Def().rand(),
+    //   position: {
+    //     x: 0,
+    //     y: 7*128
+    //   },
+    //   sizes: {
+    //     width: 8,
+    //     height: 1
     //   }
     // })
   }

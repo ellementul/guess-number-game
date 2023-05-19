@@ -1,15 +1,16 @@
 import { Container, Graphics } from 'pixi.js';
 
-export default class Bullet extends Container {
+export default class Bullet extends Graphics {
   constructor({ position, radius }) {
     super()
 
-    const graphics = new Graphics()
-    graphics.beginFill(0xC34288, 1)
-    graphics.drawCircle(position.x, position.y, radius * 2)
-    graphics.endFill()
+    this.beginFill(0xC34288, 1)
+    this.drawCircle(position.x, position.y, radius  )
+    this.endFill()
 
-    this.addChild(graphics)
+    this.pivot.x = this.width * 0.5
+    this.pivot.y = this.height * 0.5
+    this.position.set(position.x, position.y)
 
     this.velocity = {
       x: 0,

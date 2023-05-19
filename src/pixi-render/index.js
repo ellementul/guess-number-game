@@ -3,6 +3,8 @@ const updatedEvent = require('../events/updated_world_event')
 
 import { Application, Container } from 'pixi.js';
 import Bullet from './bullet'
+import Box from './box';
+import Grid from './grid';
 
 // The application will create a renderer using WebGL, if possible,
 // with a fallback to a canvas render. It will also setup the ticker
@@ -17,6 +19,8 @@ export default class World {
 
     this.view = new Container()
     app.stage.addChild(this.view)
+
+    this.view.addChild(new Grid)
 
     this.physicObjects = new Map()
     // app.ticker.add(delta => {
@@ -34,7 +38,7 @@ export default class World {
     this.physicObjects.set(uuid, object)
   }
 
-  create({ entity, state: { uuid, position, radius } }) {
+  create({ entity, uuid, position, radius, sizes }) {
     let object
 
     switch (entity) {
@@ -47,14 +51,24 @@ export default class World {
           radius: transformUnitToPixels(radius)
         })
         break
+
+      case "Box":
+        object = new Box({
+          position: { 
+            x: transformUnitToPixels(position.x), 
+            y: transformUnitToPixels(position.y) 
+          },
+          sizes: { 
+            width: transformUnitToPixels(sizes.width), 
+            height: transformUnitToPixels(sizes.height) 
+          }
+        })
+        break
     
       default:
         throw new TypeError('Unknown entity!')
     }
-    object.pivot.x = object.width / 2
-    object.pivot.y = object.height / 2
     
-    object.position.set(transformUnitToPixels(position.x), transformUnitToPixels(position.x))
     this.addPhysicObject(uuid, object)
   }
 

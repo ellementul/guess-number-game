@@ -10,8 +10,8 @@ export default class World extends Member {
   constructor() {
     super()
     
-    const widthMap = 1024
-    const heightMap = 1024
+    const widthMap = 512
+    const heightMap = 512
 
     this.physic = new PhysicEngine(widthMap, heightMap)
 
@@ -25,22 +25,20 @@ export default class World extends Member {
   }
 
   create({
-    entity,
-    state: {
-      uuid,
-      position,
-      radius,
-      sizes
-    }
+    entity: type,
+    uuid,
+    position,
+    radius,
+    sizes
   }) {
 
-    switch (entity) {
+    switch (type) {
       case "Bullet":
         this.createBullet(uuid, position, radius)
         break;
-      // case "Box":
-      //   this.createTiledBox(uuid, position, sizes)
-      //   break;
+      case "Box":
+        this.createTiledBox(uuid, position, sizes)
+        break;
     
       default:
         throw new TypeError('Unknown entity for world!')
@@ -67,7 +65,7 @@ export default class World extends Member {
   }
 
   createTiledBox(uid, position, sizes) {
-
+    console.log(uid, position, sizes)
   }
 
   run() {
