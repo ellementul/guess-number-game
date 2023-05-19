@@ -4,7 +4,8 @@ const timeEvent = require('../events/time_event')
 const waitEvent = require('../events/wait_event')
 const readyEvent = require('../events/player_ready_event')
 const startEvent = require('../events/game_start_event')
-const createObjectEvent = require('../events/create_object_event')
+const createBulletEvent = require('../events/create_bullet_event')
+const createBoxEvent = require('../events/create_box_event')
 const pingEvent = require('../events/ping_event')
 const gameTickEvent = require('../events/game_tick_event')
 const { nextTick } = require('process')
@@ -75,67 +76,50 @@ class GameMaster extends Member {
 
   loadWorld () {
 
-    this.send(createObjectEvent, {
-      entity: "Bullet",
+    this.send(createBulletEvent, {
       uuid: Types.UUID.Def().rand(),
       position: {
         x: 32,
         y: 32
       },
-      radius: 32
+      radius: 8
     })
 
-    // this.send(createObjectEvent, {
-    //   entity: "Box",
-    //   uuid: Types.UUID.Def().rand(),
-    //   position: {
-    //     x: 0,
-    //     y: 0
-    //   },
-    //   sizes: {
-    //     width: 8,
-    //     height: 1
-    //   }
-    // })
+    this.send(createBoxEvent, {
+      entity: "Box",
+      uuid: Types.UUID.Def().rand(),
+      position: {
+        column: 0,
+        row: 0
+      }
+    })
 
-    // this.send(createObjectEvent, {
-    //   entity: "Box",
-    //   uuid: Types.UUID.Def().rand(),
-    //   position: {
-    //     x: 0,
-    //     y: 64
-    //   },
-    //   sizes: {
-    //     width: 1,
-    //     height: 6
-    //   }
-    // })
+    this.send(createBoxEvent, {
+      entity: "Box",
+      uuid: Types.UUID.Def().rand(),
+      position: {
+        column: 7,
+        row: 0
+      }
+    })
 
-    // this.send(createObjectEvent, {
-    //   entity: "Box",
-    //   uuid: Types.UUID.Def().rand(),
-    //   position: {
-    //     x: 7*128,
-    //     y: 128
-    //   },
-    //   sizes: {
-    //     width: 1,
-    //     height: 6
-    //   }
-    // })
+    this.send(createBoxEvent, {
+      entity: "Box",
+      uuid: Types.UUID.Def().rand(),
+      position: {
+        column: 0,
+        row: 7
+      }
+    })
 
-    // this.send(createObjectEvent, {
-    //   entity: "Box",
-    //   uuid: Types.UUID.Def().rand(),
-    //   position: {
-    //     x: 0,
-    //     y: 7*128
-    //   },
-    //   sizes: {
-    //     width: 8,
-    //     height: 1
-    //   }
-    // })
+    this.send(createBoxEvent, {
+      entity: "Box",
+      uuid: Types.UUID.Def().rand(),
+      position: {
+        column: 7,
+        row: 7
+      }
+    })
   }
 }
 

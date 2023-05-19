@@ -1,4 +1,5 @@
-const createObjectEvent = require('../events/create_object_event')
+const createBulletEvent = require('../events/create_bullet_event')
+const createBoxEvent = require('../events/create_box_event')
 const updatedEvent = require('../events/updated_world_event')
 
 import { Application, Container } from 'pixi.js';
@@ -29,47 +30,27 @@ export default class World {
     //   }
     // })
 
-    onEvent(createObjectEvent, payload => this.create(payload))
+    onEvent(createBulletEvent, payload => this.createBullet(payload))
+    onEvent(createBoxEvent, payload => this.createBox(payload))
     onEvent(updatedEvent, payload => this.update(payload))
   }
 
-  addPhysicObject(uuid, object) {
+  createBullet({ uuid, position, radius }) {
+    const object = new Bullet({
+      position: { 
+        x: transformUnitToPixels(position.x), 
+        y: transformUnitToPixels(position.y) 
+      },
+      radius: transformUnitToPixels(radius)
+    })
+
     this.view.addChild(object)
     this.physicObjects.set(uuid, object)
   }
 
-  create({ entity, uuid, position, radius, sizes }) {
-    let object
-
-    switch (entity) {
-      case "Bullet":
-        object = new Bullet({
-          position: { 
-            x: transformUnitToPixels(position.x), 
-            y: transformUnitToPixels(position.y) 
-          },
-          radius: transformUnitToPixels(radius)
-        })
-        break
-
-      case "Box":
-        object = new Box({
-          position: { 
-            x: transformUnitToPixels(position.x), 
-            y: transformUnitToPixels(position.y) 
-          },
-          sizes: { 
-            width: transformUnitToPixels(sizes.width), 
-            height: transformUnitToPixels(sizes.height) 
-          }
-        })
-        break
-    
-      default:
-        throw new TypeError('Unknown entity!')
-    }
-    
-    this.addPhysicObject(uuid, object)
+  createBox({ uuid, position }) {
+    const box = new Box({ position })
+    this.view.addChild(box)
   }
 
   update({ state: objects }) {

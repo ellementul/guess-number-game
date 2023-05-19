@@ -6,7 +6,7 @@ const startEvent = require('../events/game_start_event')
 const pingEvent = require('../events/ping_event')
 const gameTickEvent = require('../events/game_tick_event')
 
-import World from '../pixi-render'
+import World from '../world-render'
 
 const WAIT = "WaitingOtherPlayers"
 const LOAD = "Ready" 

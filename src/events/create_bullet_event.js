@@ -2,15 +2,13 @@ const { EventFactory, Types } = require('@ellementul/uee-core')
 const positionType = Types.Number.Def(4*1024, - 4*1024, 2)
 const type = Types.Object.Def({
   system: "World",
-  entity: Types.Any.Def([
-    Types.Const.Def("Bullet"),
-    Types.Const.Def("Box")
-  ]),
-  action: "Created",
+  entity: "Bullet",
+  action: "Create",
   uuid: Types.UUID.Def(),
   position: {
     x: positionType,
     y: positionType
-  }
-}, true) 
+  },
+  radius: Types.Index.Def(512)
+})
 module.exports = EventFactory(type)

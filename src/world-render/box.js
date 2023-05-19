@@ -1,15 +1,14 @@
 import { Container, Graphics } from 'pixi.js';
 
 export default class Box extends Container {
-  constructor({
-    position: { x, y },
-    sizes: { width, height }
-  }) {
+  constructor({ position: { row, column } }) {
     super()
 
+    const tileSize = 64
+
     const graphics = new Graphics()
-    graphics.beginFill(0xC31212, 1)
-    graphics.drawRect(x+width*32, y+height*32, width*64, height*64)
+    graphics.beginFill(0x12C312, 1)
+    graphics.drawRect(row * tileSize, column * tileSize, tileSize, tileSize)
     graphics.endFill()
 
     this.addChild(graphics)

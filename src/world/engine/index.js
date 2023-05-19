@@ -1,8 +1,10 @@
 const { SectionCoordinates } = require('./section-coordinates');
+const { TileMap } = require('./tile-map');
 
 class PhysicEngine {
-  constructor(width, height) {
+  constructor(width, height, tileSize) {
     this.sectionCoordinates = new SectionCoordinates(width, height)
+    this.tileMap = new TileMap(width, height, tileSize)
 
     this.dynamicObjects = new Map()
 
@@ -63,8 +65,8 @@ class PhysicEngine {
     })
   }
 
-  addTiledObject({ uid, tilePosition }) {
-    
+  addTiledObject({ uid, position }) {
+    this.tileMap.addBox({ uid, position })
   }
 
   addSensor({ uid, radius }) {

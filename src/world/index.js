@@ -1,7 +1,8 @@
 const { Member } = require('@ellementul/uee-core')
 const timeEvent = require('../events/game_tick_event.js')
 const updateWorldEvent = require('../events/updated_world_event')
-const createdObjectEvent = require('../events/create_object_event')
+const createdBulletEvent = require('../events/create_bullet_event.js')
+const createdBoxEvent = require('../events/create_box_event.js')
 const startEvent = require('../events/game_start_event')
 
 const { PhysicEngine } = require('./engine')
@@ -12,8 +13,9 @@ export default class World extends Member {
     
     const widthMap = 512
     const heightMap = 512
+    const tileSize = 64
 
-    this.physic = new PhysicEngine(widthMap, heightMap)
+    this.physic = new PhysicEngine(widthMap, heightMap, tileSize)
 
     this.bullet = new Set
 
@@ -21,31 +23,11 @@ export default class World extends Member {
     this.mstime = Date.now()
 
     this.onEvent(startEvent, () => this.run())
-    this.onEvent(createdObjectEvent, payload => this.create(payload))
+    this.onEvent(createdBulletEvent, payload => this.createBullet(payload))
+    this.onEvent(createdBoxEvent, payload => this.createTileBox(payload))
   }
 
-  create({
-    entity: type,
-    uuid,
-    position,
-    radius,
-    sizes
-  }) {
-
-    switch (type) {
-      case "Bullet":
-        this.createBullet(uuid, position, radius)
-        break;
-      case "Box":
-        this.createTiledBox(uuid, position, sizes)
-        break;
-    
-      default:
-        throw new TypeError('Unknown entity for world!')
-    }      
-  }
-
-  createBullet(uid, position, radius) {
+  createBullet({ uuid: uid, position, radius }) {
     const velocity = { x: 128, y: 128 }
 
     const polygon = [
@@ -64,8 +46,8 @@ export default class World extends Member {
     this.bullet.add(uid)
   }
 
-  createTiledBox(uid, position, sizes) {
-    console.log(uid, position, sizes)
+  createTileBox({ uid, position }) {
+    this.physic.addTiledObject({ uid, position })
   }
 
   run() {
