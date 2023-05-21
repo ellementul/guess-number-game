@@ -28,7 +28,7 @@ export default class World extends Member {
   }
 
   createBullet({ uuid: uid, position, radius }) {
-    const velocity = { x: 128, y: 128 }
+    const velocity = { x: 128, y: 120 }
 
     const polygon = [
       { x: position.x, y: position.y + radius },
@@ -46,8 +46,8 @@ export default class World extends Member {
     this.bullet.add(uid)
   }
 
-  createTileBox({ uid, position }) {
-    this.physic.addTiledObject({ uid, position })
+  createTileBox({ uuid, position }) {
+    this.physic.addTiledObject({ uid: uuid, position })
   }
 
   run() {
