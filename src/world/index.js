@@ -46,8 +46,8 @@ export default class World extends Member {
     this.bullet.add(uid)
   }
 
-  createTileBox({ uid, position }) {
-    this.physic.addTiledObject({ uid, position })
+  createTileBox({ uuid, position }) {
+    this.physic.addTiledObject({ uid: uuid, position })
   }
 
   run() {

@@ -1,3 +1,5 @@
+import { calc, ipoint, point } from "@js-basics/vector";
+
 const { SectionCoordinates } = require('./section-coordinates');
 const { TileMap } = require('./tile-map');
 
@@ -29,7 +31,7 @@ class PhysicEngine {
       }
 
       return center
-    }, {x: 0, y: 0})
+    }, point(0, 0))
 
     const minX = Math.min(...polygon.map(point => point.x))
     const minY = Math.min(...polygon.map(point => point.x))
@@ -58,9 +60,10 @@ class PhysicEngine {
       polygon,
       position,
       collide,
-      velocity: {
-        x: velocity.x * 0.001, // second to millisecond
-        y: velocity.y * 0.001
+      velocity: point(velocity.x * 0.001, velocity.y * 0.001),
+      path: {
+        lastPoint: position,
+        nextPoint: position
       }
     })
   }
@@ -122,20 +125,32 @@ class PhysicEngine {
     }
   }
 
-  resolveCollisions(){
-
+  resolveCollisions({ type, uid, wallUid, crosspoint, reflectNormal}){
+    const object = this.dynamicObjects.get(uid)
+    object.position = crosspoint.toPoint()
+    
+    const dotNorm = calc(() => reflectNormal.dot(object.velocity) / reflectNormal.dot(reflectNormal))
+    const reflectVelosity = calc(() => 2 * dotNorm * reflectNormal - object.velocity)
+    
+    object.velocity = point(reflectVelosity.x, reflectVelosity.y)
   }
 
-  processCollisions(uid){
-    const nearerObjects = this.sectionCoordinates.getNearerObjects(uid)
-    const collisions = nearerObjects
-      .forEach(nearObjectUid => this.checkCollision(uid, nearObjectUid))
-      .filter(collision => !!collision)
-    this.resolveCollisions(uid, collisions)
+  processCollisions(uid, { path, }){
+    const { isCollision, wallUid, crosspoint, reflectNormal } = this.tileMap.checkCollision(path)
+
+    if(isCollision)
+      this.resolveCollisions({ type: "Tiled", uid, wallUid, crosspoint, reflectNormal })
+
+    // const nearerObjects = this.sectionCoordinates.getNearerObjects(uid)
+    // const collisions = nearerObjects
+    //   .forEach(nearObjectUid => this.checkCollision(uid, nearObjectUid))
+    //   .filter(collision => !!collision)
+    // this.resolveCollisions(uid, collisions)
   }
 
   moveObject(uid, deltaTime) {
     const object = this.dynamicObjects.get(uid)
+    const lastPoint = ipoint(object.position.x, object.position.y)
 
     if(!!object.velocity.x)
       object.position.x += object.velocity.x * deltaTime
@@ -147,6 +162,11 @@ class PhysicEngine {
       this.remove(uid)
 
     this.sectionCoordinates.upsert(uid, object.position)
+
+    object.path =  {
+      lastPoint,
+      nextPoint: ipoint(object.position.x, object.position.y)
+    }
   }
 
   step(deltaTime){
@@ -155,8 +175,8 @@ class PhysicEngine {
     for(let [uid, object] of this.dynamicObjects)
       this.moveObject(uid, deltaTime)
 
-    // for(let [uid, object] of this.dynamicObjects)
-    //   this.processCollisions(uid)
+    for(let [uid, object] of this.dynamicObjects)
+      this.processCollisions(uid, object)
   }
 
   getObjectList(){
