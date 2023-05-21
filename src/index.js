@@ -31,10 +31,10 @@ const membersList = {
 env = new UEE({
   Transport: WsTransport,
   membersList,
-  // logging: payload => {
-  //   if(payload.message.entity === "Player")
-  //     console.log(payload.message)
-  // },
+  logging: payload => {
+    if(payload.message.entity === "Player" && payload.message.state === "Ready")
+      console.log(payload.message)
+  },
   isShowErrors: true
 })
 
@@ -42,9 +42,8 @@ const url = new URL(window.location.href)
 const hostAddress = url.searchParams.get('host_address')
 env.run({
   isHost: !hostAddress,
-  signalServerAddress: "ws://127.0.0.1:8080",
+  signalServerAddress: "ws://localhost:8080",
 })
 
 url.searchParams.set('host_address', true)
-// history.pushState({ isHost: true }, "Guess Game", url)
 console.log(url.href)

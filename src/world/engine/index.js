@@ -131,8 +131,6 @@ class PhysicEngine {
     
     const dotNorm = calc(() => reflectNormal.dot(object.velocity) / reflectNormal.dot(reflectNormal))
     const reflectVelosity = calc(() => object.velocity - 2 * dotNorm * reflectNormal)
-
-    console.log(reflectVelosity.toString())
     
     object.velocity = point(reflectVelosity.x, reflectVelosity.y)
   }

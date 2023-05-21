@@ -17,7 +17,7 @@ class GameMaster extends Member {
   constructor() {
     super()
     this.players = new Set
-    this.players_limit = 1
+    this.players_limit = 2
 
     this.onEvent(timeEvent, () => this.waitingTime())
     this.onEvent(readyEvent, (payload) => this.readyPlayer(payload))
@@ -85,41 +85,45 @@ class GameMaster extends Member {
       radius: 8
     })
 
-    this.send(createBoxEvent, {
-      entity: "Box",
-      uuid: Types.UUID.Def().rand(),
-      position: {
-        column: 0,
-        row: 0
-      }
-    })
+    for(let i = 7; i >= 0; i--){
+      this.send(createBoxEvent, {
+        entity: "Box",
+        uuid: Types.UUID.Def().rand(),
+        position: {
+          column: 7,
+          row: i
+        }
+      })
 
-    this.send(createBoxEvent, {
-      entity: "Box",
-      uuid: Types.UUID.Def().rand(),
-      position: {
-        column: 7,
-        row: 0
-      }
-    })
+      this.send(createBoxEvent, {
+        entity: "Box",
+        uuid: Types.UUID.Def().rand(),
+        position: {
+          column: 0,
+          row: i
+        }
+      })
+    }
 
-    this.send(createBoxEvent, {
-      entity: "Box",
-      uuid: Types.UUID.Def().rand(),
-      position: {
-        column: 0,
-        row: 7
-      }
-    })
+    for(let i = 6; i >= 1; i--){
+      this.send(createBoxEvent, {
+        entity: "Box",
+        uuid: Types.UUID.Def().rand(),
+        position: {
+          column: i,
+          row: 7
+        }
+      })
 
-    this.send(createBoxEvent, {
-      entity: "Box",
-      uuid: Types.UUID.Def().rand(),
-      position: {
-        column: 7,
-        row: 7
-      }
-    })
+      this.send(createBoxEvent, {
+        entity: "Box",
+        uuid: Types.UUID.Def().rand(),
+        position: {
+          column: i,
+          row: 0
+        }
+      })
+    }
   }
 }
 
