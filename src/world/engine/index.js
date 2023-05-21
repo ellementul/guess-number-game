@@ -77,6 +77,7 @@ class PhysicEngine {
   }
 
   remove(uid) {
+    console.log('Removed object', uid)
     this.dynamicObjects.delete(uid)
   }
 
@@ -131,7 +132,7 @@ class PhysicEngine {
     
     const dotNorm = calc(() => reflectNormal.dot(object.velocity) / reflectNormal.dot(reflectNormal))
     const reflectVelosity = calc(() => object.velocity - 2 * dotNorm * reflectNormal)
-    
+
     object.velocity = point(reflectVelosity.x, reflectVelosity.y)
   }
 

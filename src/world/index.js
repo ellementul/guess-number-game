@@ -28,7 +28,7 @@ export default class World extends Member {
   }
 
   createBullet({ uuid: uid, position, radius }) {
-    const velocity = { x: 1024, y: 1024 }
+    const velocity = { x: 512, y: 512 }
 
     const polygon = [
       { x: position.x, y: position.y + radius },
