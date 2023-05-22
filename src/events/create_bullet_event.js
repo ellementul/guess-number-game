@@ -9,6 +9,10 @@ const type = Types.Object.Def({
     x: positionType,
     y: positionType
   },
+  velocity: {
+    x: positionType,
+    y: positionType
+  },
   radius: Types.Index.Def(512)
 })
 module.exports = EventFactory(type)

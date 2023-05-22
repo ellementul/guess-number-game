@@ -1,13 +1,10 @@
 import { calc, ipoint, point } from "@js-basics/vector";
 
 const { System } = require("detect-collisions")
-
-const { SectionCoordinates } = require('./section-coordinates');
 const { TileMap } = require('./tile-map');
 
 class PhysicEngine {
   constructor(width, height, tileSize) {
-    // this.sectionCoordinates = new SectionCoordinates(width, height)
     this.tileMap = new TileMap(width, height, tileSize)
 
     this.dynamicObjects = new Map()
@@ -89,47 +86,9 @@ class PhysicEngine {
     return false;
   }
 
-  // checkPoints(a1, a2, b1, b2) {
-  //   if(a1 < b1) {
-  //     return (b1 < a2)
-  //   }
-  //   else {
-  //     return (a1 < b2)
-  //   }
-  // }
-
-  // checkCollision(objectUidA, objectUidB){
-  //   const objectA = this.dynamicObjects.get(objectUidA)
-  //   const objectB = this.dynamicObjects.get(objectUidB)
-
-  //   if(!objectA.velocity.x && !objectA.velocity.y) return;
-
-  //   if(!this.checkPoints(
-  //     objectA.collide.x1,
-  //     objectA.collide.x2,
-  //     objectB.collide.x1,
-  //     objectB.collide.x2
-  //   )) return
-
-  //   if(!this.checkPoints(
-  //     objectA.collide.y1,
-  //     objectA.collide.y2,
-  //     objectB.collide.y1,
-  //     objectB.collide.y2
-  //   )) return
-
-  //   return {
-  //     x: objectA.position.x - objectB.position.x,
-  //     y: objectA.position.y - objectB.position.y
-  //   }
-  // }
-
   resolveCollisions({ type, object, crosspoint, reflectNormal}) {
     if(type === "Tiled")
       object.setPosition(crosspoint.x, crosspoint.y)
-
-    if(object.velocity.x == 0 && object.velocity.y == 0)
-      return
 
     const dotNorm = calc(() => reflectNormal.dot(object.velocity) / reflectNormal.dot(reflectNormal))
     const reflectVelosity = calc(() => object.velocity - 2 * dotNorm * reflectNormal)
@@ -141,9 +100,6 @@ class PhysicEngine {
         Math.abs(object.velocity.x) * Math.sign(reflectNormal.x) * -1,
         Math.abs(object.velocity.y) * Math.sign(reflectNormal.y) * -1
       )
-
-    if(type !== "Tiled")
-      console.log('object.velocity', object.uid, object.velocity.toString())
   }
 
   processCollisions(uid, object){
@@ -156,12 +112,6 @@ class PhysicEngine {
         crosspoint, 
         reflectNormal
       })
-
-    // const nearerObjects = this.sectionCoordinates.getNearerObjects(uid)
-    // const collisions = nearerObjects
-    //   .forEach(nearObjectUid => this.checkCollision(uid, nearObjectUid))
-    //   .filter(collision => !!collision)
-    // this.resolveCollisions(uid, collisions)
   }
 
   moveObject(uid, deltaTime) {
@@ -179,8 +129,6 @@ class PhysicEngine {
     if(this.checkOutLimitMap(object.pos))
       this.remove(uid)
 
-    // this.sectionCoordinates.upsert(uid, object.position)
-
     object.path =  {
       lastPoint,
       nextPoint: ipoint(object.pos.x, object.pos.y)
@@ -188,13 +136,11 @@ class PhysicEngine {
   }
 
   step(deltaTime){
-    // this.sectionCoordinates.clear()
 
-    for(let [uid, object] of this.dynamicObjects)
+    for(let [uid, object] of this.dynamicObjects) {
       this.moveObject(uid, deltaTime)
-
-    for(let [uid, object] of this.dynamicObjects)
       this.processCollisions(uid, object)
+    }  
 
     this.collisionSystem.checkAll(({ overlapN, overlapV, a: object }) => {
       this.resolveCollisions({ 

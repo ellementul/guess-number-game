@@ -82,6 +82,7 @@ class GameMaster extends Member {
         x: 96,
         y: 96
       },
+      velocity: { x: 512, y: 512 },
       radius: 32
     })
 
@@ -91,6 +92,17 @@ class GameMaster extends Member {
         x: 96,
         y: 256
       },
+      velocity: { x: 512, y: 512 },
+      radius: 32
+    })
+
+    this.send(createBulletEvent, {
+      uuid: Types.UUID.Def().rand(),
+      position: {
+        x: 256,
+        y: 96
+      },
+      velocity: { x: 0, y: 0 },
       radius: 32
     })
 
