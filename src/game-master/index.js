@@ -79,21 +79,23 @@ class GameMaster extends Member {
     this.send(createBulletEvent, {
       uuid: Types.UUID.Def().rand(),
       position: {
-        x: 96,
+        x: 296,
         y: 96
       },
-      velocity: { x: 512, y: 512 },
-      radius: 32
+      velocity: { x: -25*10, y: 0 },
+      radius: 16,
+      color: "Red"
     })
 
     this.send(createBulletEvent, {
       uuid: Types.UUID.Def().rand(),
       position: {
         x: 96,
-        y: 256
+        y: 416
       },
-      velocity: { x: 512, y: 512 },
-      radius: 32
+      velocity: { x: 45*10, y: -25*10 },
+      radius: 16,
+      color: "Green"
     })
 
     this.send(createBulletEvent, {
@@ -102,8 +104,9 @@ class GameMaster extends Member {
         x: 256,
         y: 96
       },
-      velocity: { x: 0, y: 0 },
-      radius: 32
+      velocity: { x: 45*7, y: -25*7 },
+      radius: 16,
+      color: "Yellow"
     })
 
     for(let i = 7; i >= 0; i--){

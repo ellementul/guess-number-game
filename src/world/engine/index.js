@@ -59,6 +59,7 @@ class PhysicEngine {
       nextPoint: position
     }
 
+    console.log(uid)
     this.dynamicObjects.set(uid, body)
   }
 
@@ -87,9 +88,6 @@ class PhysicEngine {
   }
 
   resolveCollisions({ type, object, crosspoint, reflectNormal}) {
-    if(type === "Tiled")
-      object.setPosition(crosspoint.x, crosspoint.y)
-
     const dotNorm = calc(() => reflectNormal.dot(object.velocity) / reflectNormal.dot(reflectNormal))
     const reflectVelosity = calc(() => object.velocity - 2 * dotNorm * reflectNormal)
 
@@ -97,19 +95,22 @@ class PhysicEngine {
       object.velocity = point(reflectVelosity.x, reflectVelosity.y)
     else
       object.velocity = point(
-        Math.abs(object.velocity.x) * Math.sign(reflectNormal.x) * -1,
-        Math.abs(object.velocity.y) * Math.sign(reflectNormal.y) * -1
+        object.velocity.x * -1,
+        object.velocity.y * -1
       )
+
+    // console.log(object.uid, object.velocity.length)
+    object.setPosition(crosspoint.x, crosspoint.y)
   }
 
   processCollisions(uid, object){
     const { isCollision, wallUid, crosspoint, reflectNormal } = this.tileMap.checkCollision(object.path)
-
+    
     if(isCollision)
       this.resolveCollisions({ 
         type: "Tiled", 
         object, 
-        crosspoint, 
+        crosspoint,
         reflectNormal
       })
   }
@@ -142,12 +143,12 @@ class PhysicEngine {
       this.processCollisions(uid, object)
     }  
 
-    this.collisionSystem.checkAll(({ overlapN, overlapV, a: object }) => {
+    this.collisionSystem.checkAll(({ overlapN, overlapV, a: objectA, b: objectB }) => {
       this.resolveCollisions({ 
         type: "Bullet", 
-        object, 
-        crosspoint: ipoint(0, 0), 
-        reflectNormal: overlapV
+        object: objectA, 
+        crosspoint: ipoint(objectA.pos.x - overlapV.x * 0.5,  objectA.pos.y - overlapV.y * 0.5),
+        reflectNormal: ipoint(objectA.pos.x - objectB.pos.x, objectA.pos.y - objectB.pos.y)
       })
     })
   }

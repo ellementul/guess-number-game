@@ -6,11 +6,16 @@ export default class Bullets {
     this.view = view
     this.bullets = new Map
 
-    this.texture = Texture.from('img/ball.png')
+    this.textures = {
+      "Red": Texture.from('img/ball_red.png'),
+      "Green": Texture.from('img/ball_green.png'),
+      "Yellow": Texture.from('img/ball_yellow.png')
+    }
   }
 
-  create({ uuid, position, velocity }) {
-    const bullet = new Bullet(this.texture, position)
+  create({ uuid, position, velocity, color }) {
+    console.log("Red", this.textures[color])
+    const bullet = new Bullet(this.textures[color], position)
 
     this.view.addChild(bullet)
     this.bullets.set(uuid, bullet)
@@ -38,7 +43,7 @@ class Bullet extends Sprite {
     super(texture)
 
     this.anchor.set(0.5)
-    // this.scale.set(0.25)
+    this.scale.set(0.5)
 
     this.x = position.x
     this.y = position.y

@@ -27,7 +27,7 @@ export default class World extends Member {
     this.onEvent(createdBoxEvent, payload => this.createTileBox(payload))
   }
 
-  createBullet({ uuid: uid, position, velocity, radius }) {
+  createBullet({ uuid: uid, position, velocity, radius, color }) {
     const polygon = [
       { x: position.x, y: position.y + radius },
       { x: position.x + radius, y: position.y },

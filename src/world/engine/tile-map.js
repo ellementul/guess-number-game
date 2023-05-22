@@ -61,7 +61,10 @@ class TileMap {
     const coordSign = coordVector.y === 0 ? Math.sign(coordVector.x) : Math.sign(coordVector.y)
     const coordProj = coordVector.y === 0 ? path.x : path.y
 
-    return path.length / coordProj * coordSign
+    if(coordProj === 0)
+      return 0;
+
+    return  coordProj * coordSign / path.length
   }
 
   getCrosspoint({ lastPoint, nextPoint }) {

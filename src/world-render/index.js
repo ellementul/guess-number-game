@@ -32,14 +32,18 @@ export default class World {
     onEvent(updatedEvent, payload => this.update(payload))
   }
 
-  createBullet({ uuid, position, radius }) {
+  createBullet({ uuid, position, velocity, color }) {
     this.bullets.create({
       uuid,
       position: { 
         x: transformUnitToPixels(position.x), 
         y: transformUnitToPixels(position.y) 
       },
-      radius: transformUnitToPixels(radius)
+      velocity: { 
+        x: transformUnitToPixels(velocity.x), 
+        y: transformUnitToPixels(velocity.y) 
+      },
+      color
     })
   }
 

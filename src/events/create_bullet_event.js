@@ -13,6 +13,11 @@ const type = Types.Object.Def({
     x: positionType,
     y: positionType
   },
-  radius: Types.Index.Def(512)
+  radius: Types.Index.Def(512),
+  color: Types.Any.Def([
+    Types.Const.Def("Red"),
+    Types.Const.Def("Green"),
+    Types.Const.Def("Yellow"),
+  ])
 })
 module.exports = EventFactory(type)
