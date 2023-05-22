@@ -17,7 +17,7 @@ class GameMaster extends Member {
   constructor() {
     super()
     this.players = new Set
-    this.players_limit = 1
+    this.players_limit = 2
 
     this.onEvent(timeEvent, () => this.waitingTime())
     this.onEvent(readyEvent, (payload) => this.readyPlayer(payload))
@@ -83,7 +83,7 @@ class GameMaster extends Member {
         y: 96
       },
       velocity: { x: -25*10, y: 0 },
-      radius: 16,
+      radius: 32,
       color: "Red"
     })
 
@@ -94,7 +94,7 @@ class GameMaster extends Member {
         y: 416
       },
       velocity: { x: 45*10, y: -25*10 },
-      radius: 16,
+      radius: 32,
       color: "Green"
     })
 
@@ -105,7 +105,7 @@ class GameMaster extends Member {
         y: 96
       },
       velocity: { x: 45*7, y: -25*7 },
-      radius: 16,
+      radius: 32,
       color: "Yellow"
     })
 

@@ -37,6 +37,7 @@ export default class World extends Member {
 
     this.physic.addDynamicObject({
       uid,
+      color,
       polygon,
       velocity
     })

@@ -43,7 +43,7 @@ class Bullet extends Sprite {
     super(texture)
 
     this.anchor.set(0.5)
-    this.scale.set(0.5)
+    // this.scale.set(0.5)
 
     this.x = position.x
     this.y = position.y

@@ -10,6 +10,7 @@ class PhysicEngine {
     this.dynamicObjects = new Map()
 
     this.collisionSystem = new System()
+    this.coliisionGroups = new GoupsCollision()
 
     this.limit = {
       beginX: 0,
@@ -43,7 +44,7 @@ class PhysicEngine {
     return { position, points }
   }
 
-  addDynamicObject({ uid, polygon, velocity }) {
+  addDynamicObject({ uid, color, polygon, velocity }) {
     if(this.dynamicObjects.has(uid)) return;
 
     if(polygon.some(point => this.checkOutLimitMap(point)))
@@ -53,13 +54,13 @@ class PhysicEngine {
 
     const body = this.collisionSystem.createPolygon(position, points)
     body.uid = uid
+    body.coliisionGroup = this.coliisionGroups[color]
     body.velocity = point(velocity.x * 0.001, velocity.y * 0.001)
     body.path = {
       lastPoint: position,
       nextPoint: position
     }
 
-    console.log(uid)
     this.dynamicObjects.set(uid, body)
   }
 
@@ -144,12 +145,13 @@ class PhysicEngine {
     }  
 
     this.collisionSystem.checkAll(({ overlapN, overlapV, a: objectA, b: objectB }) => {
-      this.resolveCollisions({ 
-        type: "Bullet", 
-        object: objectA, 
-        crosspoint: ipoint(objectA.pos.x - overlapV.x * 0.5,  objectA.pos.y - overlapV.y * 0.5),
-        reflectNormal: ipoint(objectA.pos.x - objectB.pos.x, objectA.pos.y - objectB.pos.y)
-      })
+      if(this.coliisionGroups.isCollision(objectA.coliisionGroup, objectB.coliisionGroup))
+        this.resolveCollisions({ 
+          type: "Bullet", 
+          object: objectA, 
+          crosspoint: ipoint(objectA.pos.x - overlapV.x * 0.5,  objectA.pos.y - overlapV.y * 0.5),
+          reflectNormal: ipoint(objectA.pos.x - objectB.pos.x, objectA.pos.y - objectB.pos.y)
+        })
     })
   }
 
@@ -170,6 +172,41 @@ class PhysicEngine {
     }
 
     return objects
+  }
+}
+
+class GoupsCollision {
+  constructor() {
+    const R = Symbol()
+    const Y = Symbol()
+    const G = Symbol()
+
+    this.Red = R
+    this.Yellow = Y
+    this.Green = G
+
+    this._groups = new Map
+    this._groups.set(R, new Map([
+      [R, true],
+      [G, false],
+      [Y, true]
+    ]))
+
+    this._groups.set(G, new Map([
+      [R, false],
+      [G, true],
+      [Y, true],
+    ]))
+
+    this._groups.set(Y, new Map([
+      [R, true],
+      [G, true],
+      [Y, true],
+    ]))
+  }
+
+  isCollision(g1, g2) {
+    return this._groups.get(g1).get(g2)
   }
 }
 
