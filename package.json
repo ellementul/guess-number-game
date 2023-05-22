@@ -29,6 +29,7 @@
     "@js-basics/vector": "^2.0.12",
     "@pixi/layout": "^0.1.8",
     "@pixi/ui": "^0.7.0",
+    "detect-collisions": "^8.0.5",
     "pixi.js": "^7.2.4",
     "planck": "^1.0.0-alpha.4"
   },

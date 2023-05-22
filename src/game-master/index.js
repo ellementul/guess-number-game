@@ -17,7 +17,7 @@ class GameMaster extends Member {
   constructor() {
     super()
     this.players = new Set
-    this.players_limit = 2
+    this.players_limit = 1
 
     this.onEvent(timeEvent, () => this.waitingTime())
     this.onEvent(readyEvent, (payload) => this.readyPlayer(payload))
@@ -82,7 +82,16 @@ class GameMaster extends Member {
         x: 96,
         y: 96
       },
-      radius: 8
+      radius: 32
+    })
+
+    this.send(createBulletEvent, {
+      uuid: Types.UUID.Def().rand(),
+      position: {
+        x: 96,
+        y: 256
+      },
+      radius: 32
     })
 
     for(let i = 7; i >= 0; i--){
