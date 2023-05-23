@@ -17,7 +17,7 @@ class GameMaster extends Member {
   constructor() {
     super()
     this.players = new Set
-    this.players_limit = 2
+    this.players_limit = 1
 
     this.onEvent(timeEvent, () => this.waitingTime())
     this.onEvent(readyEvent, (payload) => this.readyPlayer(payload))
