@@ -14,8 +14,7 @@ export default class Bullets {
   }
 
   create({ uuid, position, velocity, color }) {
-    console.log("Red", this.textures[color])
-    const bullet = new Bullet(this.textures[color], position)
+    const bullet = new Bullet(this.textures[color], position, velocity)
 
     this.view.addChild(bullet)
     this.bullets.set(uuid, bullet)
@@ -25,17 +24,14 @@ export default class Bullets {
     objects.forEach(({ uuid, position, velocity }) => {
       const bullet = this.bullets.get(uuid)
       bullet.setPosition(position)
+      bullet.velocity = velocity
     })
   }
 
-  // step(delta) {
-  //   let diffX = delta * this.velocity.x
-  //   let diffY = delta * this.velocity.y
-
-  //   if(diffX == 0 && diffY == 0) return
-
-  //   this.position.set(this.position.x + diffX, this.position.y + diffY)
-  // }
+  intro(delta) {
+    for (const [uuid, bullet] of this.bullets)
+      bullet.move(delta)
+  }
 }
 
 class Bullet extends Sprite {
@@ -48,14 +44,24 @@ class Bullet extends Sprite {
     this.x = position.x
     this.y = position.y
 
-    // this.velocity = {
-    //   x: velocity.x,
-    //   y: velocity.y
-    // }
+    this.velocity = {
+      x: velocity.x,
+      y: velocity.y
+    }
   }
 
   setPosition({ x, y }) {
     this.x = x
     this.y = y
+  }
+
+  move(delta) {
+    console.log(delta, Math.abs(this.velocity.x) + Math.abs(this.velocity.y))
+    let diffX = delta * this.velocity.x
+    let diffY = delta * this.velocity.y
+
+    if(diffX == 0 && diffY == 0) return
+
+    this.position.set(this.position.x + diffX, this.position.y + diffY)
   }
 }

@@ -42,7 +42,7 @@ const url = new URL(window.location.href)
 const hostAddress = url.searchParams.get('host_address')
 env.run({
   isHost: !hostAddress,
-  signalServerAddress: "ws://localhost:8080",
+  signalServerAddress: "ws://185.240.103.217:8080",
 })
 
 url.searchParams.set('host_address', true)

@@ -25,7 +25,15 @@ export default class World {
 
     this.bullets = new Bullets(this.view)
 
-    // app.ticker.add(delta => {})
+    this.mstime = Date.now()
+    app.ticker.add(() => {
+      const mstime = Date.now()
+      const delta = mstime - this.mstime
+
+      this.bullets.intro(delta)
+
+      this.mstime = mstime
+    })
 
     onEvent(createBulletEvent, payload => this.createBullet(payload))
     onEvent(createBoxEvent, payload => this.createBox(payload))
